@@ -1,0 +1,37 @@
+### IntelliJ IDEA ###
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+.kotlin
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+/src/com/jl/tankgame5/Bomb.java
+/src/com/jl/tankgame5/EnemyTank.java
+/src/com/jl/tankgame5/Hero.java
+/src/com/jl/tankgame5/MyPanel.java
+/src/com/jl/tankgame5/Shot.java
+/src/com/jl/tankgame5/Tank.java
+/src/com/jl/tankgame5/TankGame04.java

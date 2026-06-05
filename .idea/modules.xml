@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Chapt.2 IDCS/1.Hello/1.Hello.iml" filepath="$PROJECT_DIR$/Chapt.2 IDCS/1.Hello/1.Hello.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Chapt.1 HelloWorld/1.Hello/1.Hello2.iml" filepath="$PROJECT_DIR$/Chapt.1 HelloWorld/1.Hello/1.Hello2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Chapt.1 HelloWorld/2.1Zhuanyi3/2.1Zhuanyi3.iml" filepath="$PROJECT_DIR$/Chapt.1 HelloWorld/2.1Zhuanyi3/2.1Zhuanyi3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Chapt.1 HelloWorld/2.ZhuanYi/2.ZhuanYi.iml" filepath="$PROJECT_DIR$/Chapt.1 HelloWorld/2.ZhuanYi/2.ZhuanYi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Chapt.1 HelloWorld/Homework01/Homework01.iml" filepath="$PROJECT_DIR$/Chapt.1 HelloWorld/Homework01/Homework01.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Chapt.1 HelloWorld/Homework02/Homework02.iml" filepath="$PROJECT_DIR$/Chapt.1 HelloWorld/Homework02/Homework02.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Chapt.1 HelloWorld/Homework03/Homework03.iml" filepath="$PROJECT_DIR$/Chapt.1 HelloWorld/Homework03/Homework03.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Chapt.1 HelloWorld/Homework04/Homework04.iml" filepath="$PROJECT_DIR$/Chapt.1 HelloWorld/Homework04/Homework04.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Chapt.1 HelloWorld/Homework05/Homework05.iml" filepath="$PROJECT_DIR$/Chapt.1 HelloWorld/Homework05/Homework05.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Chapt.1 HelloWorld/Homework06/Homework06.iml" filepath="$PROJECT_DIR$/Chapt.1 HelloWorld/Homework06/Homework06.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/JavaProject.iml" filepath="$PROJECT_DIR$/.idea/JavaProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Pack/Pack.iml" filepath="$PROJECT_DIR$/Pack/Pack.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Chapt.2 IDCS/Var2/Var2.iml" filepath="$PROJECT_DIR$/Chapt.2 IDCS/Var2/Var2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chapter10/chapter10.iml" filepath="$PROJECT_DIR$/chapter10/chapter10.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chapter11/chapter11.iml" filepath="$PROJECT_DIR$/chapter11/chapter11.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chapter12/chapter12.iml" filepath="$PROJECT_DIR$/chapter12/chapter12.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>八大Wrapper类 — 深入浅出总结</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  background: #1a1a2e;
+  color: #eee;
+}
+.slide-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.slide {
+  background: #16213e;
+  border-radius: 16px;
+  margin-bottom: 40px;
+  padding: 50px 60px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+}
+.slide::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 6px;
+  height: 100%;
+}
+.slide:nth-child(1)::before  { background: linear-gradient(180deg, #e94560, #533483); }
+.slide:nth-child(2)::before  { background: linear-gradient(180deg, #0f3460, #e94560); }
+.slide:nth-child(3)::before  { background: linear-gradient(180deg, #533483, #0f3460); }
+.slide:nth-child(4)::before  { background: linear-gradient(180deg, #e94560, #f5a623); }
+.slide:nth-child(5)::before  { background: linear-gradient(180deg, #0f3460, #533483); }
+.slide:nth-child(6)::before  { background: linear-gradient(180deg, #f5a623, #e94560); }
+.slide:nth-child(7)::before  { background: linear-gradient(180deg, #533483, #e94560); }
+.slide:nth-child(8)::before  { background: linear-gradient(180deg, #e94560, #0f3460); }
+.slide:nth-child(9)::before  { background: linear-gradient(180deg, #0f3460, #f5a623); }
+
+.slide-number {
+  position: absolute;
+  top: 20px; right: 30px;
+  font-size: 48px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.06);
+  user-select: none;
+}
+h1 {
+  font-size: 42px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #e94560, #f5a623);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+h2 {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #f5a623;
+}
+h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 20px 0 12px;
+  color: #e94560;
+}
+.subtitle {
+  font-size: 16px;
+  color: #888;
+  margin-bottom: 30px;
+}
+p, li { font-size: 17px; line-height: 1.9; color: #ccc; }
+ul { padding-left: 24px; }
+li { margin-bottom: 6px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+  font-size: 15px;
+}
+th {
+  background: #0f3460;
+  color: #f5a623;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: #ccc;
+}
+tr:hover td { background: rgba(233,69,96,0.06); }
+code {
+  background: #0f3460;
+  color: #f5a623;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 15px;
+}
+pre {
+  background: #0d1a2d;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 20px 24px;
+  overflow-x: auto;
+  margin: 15px 0;
+  font-size: 15px;
+  line-height: 1.8;
+}
+pre code {
+  background: none;
+  color: #a8d8ea;
+  padding: 0;
+}
+.highlight { color: #e94560; font-weight: 700; }
+.green { color: #4ecca3; }
+.yellow { color: #f5a623; }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+.card {
+  background: #0d1a2d;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.card:hover { transform: translateY(-3px); border-color: #e94560; }
+.card .type { font-size: 28px; font-weight: 800; color: #e94560; }
+.card .prim {
+  font-size: 13px; color: #888; margin: 6px 0;
+}
+.card .info { font-size: 13px; color: #aaa; line-height: 1.6; }
+.tag {
+  display: inline-block;
+  background: #e94560;
+  color: #fff;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 2px 3px;
+}
+.tag-green { background: #4ecca3; }
+.tag-blue { background: #0f3460; }
+.tag-yellow { background: #f5a623; color: #1a1a2e; }
+.diagram {
+  background: #0d1a2d;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 15px;
+  line-height: 2;
+}
+.arrow { color: #f5a623; font-weight: 700; }
+.note {
+  background: rgba(233,69,96,0.1);
+  border-left: 4px solid #e94560;
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  margin: 15px 0;
+  font-size: 15px;
+}
+.tip {
+  background: rgba(78,204,163,0.1);
+  border-left: 4px solid #4ecca3;
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  margin: 15px 0;
+  font-size: 15px;
+}
+.warn {
+  background: rgba(245,166,35,0.1);
+  border-left: 4px solid #f5a623;
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  margin: 15px 0;
+  font-size: 15px;
+}
+.footer {
+  text-align: center;
+  color: #555;
+  padding: 40px;
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<div class="slide-container">
+
+<!-- ==================== Slide 1: 标题页 ==================== -->
+<div class="slide">
+  <div class="slide-number">01</div>
+  <h1>Java 八大 Wrapper 类</h1>
+  <p class="subtitle">装箱 · 拆箱 · 缓存 · 转换 — 从入门到避坑</p>
+
+  <p>Java为<span class="highlight">8种基本数据类型</span>各自提供了对应的<span class="highlight">包装类（Wrapper Class）</span>，
+  使得基本类型可以当作对象来使用——这是集合框架泛型、反射、序列化等技术的基础。</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="type">Byte</div>
+      <div class="prim">← byte</div>
+      <div class="info">8位 · -128~127</div>
+    </div>
+    <div class="card">
+      <div class="type">Short</div>
+      <div class="prim">← short</div>
+      <div class="info">16位 · ±3.2万</div>
+    </div>
+    <div class="card">
+      <div class="type">Integer</div>
+      <div class="prim">← int</div>
+      <div class="info">32位 · ±21亿<br><span class="tag">最常用</span></div>
+    </div>
+    <div class="card">
+      <div class="type">Long</div>
+      <div class="prim">← long</div>
+      <div class="info">64位 · 极大值</div>
+    </div>
+    <div class="card">
+      <div class="type">Float</div>
+      <div class="prim">← float</div>
+      <div class="info">32位浮点</div>
+    </div>
+    <div class="card">
+      <div class="type">Double</div>
+      <div class="prim">← double</div>
+      <div class="info">64位浮点<br><span class="tag">默认浮点</span></div>
+    </div>
+    <div class="card">
+      <div class="type">Boolean</div>
+      <div class="prim">← boolean</div>
+      <div class="info">true / false</div>
+    </div>
+    <div class="card">
+      <div class="type">Character</div>
+      <div class="prim">← char</div>
+      <div class="info">Unicode字符</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Slide 2: 继承体系 & 分类 ==================== -->
+<div class="slide">
+  <div class="slide-number">02</div>
+  <h2>继承体系 & 两大类别</h2>
+
+  <h3>类的继承关系</h3>
+  <table>
+    <tr><th>包装类</th><th>父类</th><th>实现接口</th></tr>
+    <tr><td><code>Byte, Short, Integer, Long, Float, Double</code></td>
+      <td><code>java.lang.Number</code></td>
+      <td><code>Comparable, Serializable</code></td></tr>
+    <tr><td><code>Boolean</code></td>
+      <td><code>java.lang.Object</code></td>
+      <td><code>Comparable, Serializable</code></td></tr>
+    <tr><td><code>Character</code></td>
+      <td><code>java.lang.Object</code></td>
+      <td><code>Comparable, Serializable</code></td></tr>
+  </table>
+
+  <div class="note">
+    <strong>关键点：</strong>6种数字型Wrapper共同继承 <code>Number</code> 抽象类，拥有
+    <code>intValue()</code> <code>longValue()</code> <code>floatValue()</code> <code>doubleValue()</code> <code>byteValue()</code> <code>shortValue()</code> 等转换方法。
+  </div>
+
+  <h3>两大类别对比</h3>
+  <table>
+    <tr><th>特性</th><th>数字型 (6种)</th><th>非数字型 (Boolean, Character)</th></tr>
+    <tr><td>父类</td><td><code>Number</code></td><td><code>Object</code></td></tr>
+    <tr><td>xxxValue()</td><td>✅ 全套数字转换</td><td>❌ 无</td></tr>
+    <tr><td>缓存机制</td><td>✅ 部分有</td><td>Boolean有 / Character有</td></tr>
+    <tr><td>compareTo()</td><td>✅ 数值比较</td><td>✅ 各自实现</td></tr>
+  </table>
+</div>
+
+<!-- ==================== Slide 3: 装箱与拆箱 ==================== -->
+<div class="slide">
+  <div class="slide-number">03</div>
+  <h2>装箱 (Boxing) 与 拆箱 (Unboxing)</h2>
+
+  <h3>手动装箱（JDK5之前）</h3>
+  <pre><code><span class="yellow">// 方式一：构造器（已过时，Java 9+ 标记为 @Deprecated）</span>
+Integer i1 = <span class="highlight">new Integer</span>(10);
+
+<span class="yellow">// 方式二：静态工厂方法（官方推荐）</span>
+Integer i2 = <span class="highlight">Integer.valueOf</span>(10);</code></pre>
+
+  <h3>手动拆箱</h3>
+  <pre><code><span class="yellow">// 调用 xxxValue() 系列方法</span>
+<span class="highlight">int</span> n = i1.<span class="highlight">intValue</span>();
+<span class="highlight">double</span> d = i2.<span class="highlight">doubleValue</span>();
+<span class="highlight">byte</span> b = i1.<span class="highlight">byteValue</span>();</code></pre>
+
+  <h3>自动装箱 & 自动拆箱（JDK5+）⭐重点</h3>
+  <pre><code>Integer i3 = <span class="highlight">100</span>;           <span class="yellow">// 自动装箱 → Integer.valueOf(100)</span>
+int n2 = <span class="highlight">i3</span>;               <span class="yellow">// 自动拆箱 → i3.intValue()</span>
+
+<span class="yellow">// 运算时自动拆箱</span>
+Integer a = 10;
+Integer b = 20;
+int sum = <span class="highlight">a + b</span>;           <span class="yellow">// 自动拆箱→int，相加后→结果int</span></code></pre>
+
+  <div class="diagram">
+    <strong style="color:#f5a623;">装箱过程：</strong><br>
+    基本类型 <code>int</code> <span class="arrow">——valueOf()——→</span> 包装对象 <code>Integer</code><br>
+    <strong style="color:#4ecca3;">拆箱过程：</strong><br>
+    包装对象 <code>Integer</code> <span class="arrow">——intValue()——→</span> 基本类型 <code>int</code>
+  </div>
+
+  <div class="warn">
+    <strong>⚠️ 高频NPE陷阱：</strong>当 <code>Integer</code> 为 <code>null</code> 时进行自动拆箱会抛出
+    <code>NullPointerException</code>！
+  </div>
+</div>
+
+<!-- ==================== Slide 4: Integer缓存机制 ==================== -->
+<div class="slide">
+  <div class="slide-number">04</div>
+  <h2>⭐⭐⭐ 重难点：Integer 缓存机制</h2>
+
+  <h3>缓存范围：<code>-128 ~ 127</code></h3>
+  <p><code>Integer.valueOf()</code> 内部维护了一个缓存数组，当值在 <code>-128</code> 到 <code>127</code> 之间时，<strong>直接返回缓存中的同一个对象</strong>。</p>
+
+  <pre><code>Integer m = <span class="highlight">1</span>;      <span class="yellow">// Integer.valueOf(1)→ 取缓存对象</span>
+Integer n = <span class="highlight">1</span>;      <span class="yellow">// Integer.valueOf(1)→ 取同一个缓存对象</span>
+System.out.println(m <span class="highlight">==</span> n);   <span class="green">// ✅ true (同一对象)</span>
+
+Integer x = <span class="highlight">128</span>;    <span class="yellow">// Integer.valueOf(128)→ 超出缓存，new新对象</span>
+Integer y = <span class="highlight">128</span>;    <span class="yellow">// Integer.valueOf(128)→ 再次new新对象</span>
+System.out.println(x <span class="highlight">==</span> y);   <span class="highlight">// ❌ false (不同对象)</span></code></pre>
+
+  <div class="note">
+    <strong>原理：</strong><code>Integer.valueOf()</code> 源码中维护了 <code>IntegerCache</code> 内部类，
+    默认缓存 [-128, 127] 共 256 个 Integer 对象。可通过 JVM 参数 <code>-XX:AutoBoxCacheMax=size</code> 调整上限。
+  </div>
+
+  <h3>各类型缓存范围一览</h3>
+  <table>
+    <tr><th>Wrapper类</th><th>缓存范围</th><th>说明</th></tr>
+    <tr><td><code>Integer</code></td><td><code>-128 ~ 127</code></td><td>上限可调，默认256个对象</td></tr>
+    <tr><td><code>Byte, Short, Long</code></td><td><code>-128 ~ 127</code></td><td>固定，不可调整</td></tr>
+    <tr><td><code>Character</code></td><td><code>0 ~ 127</code></td><td>ASCII范围</td></tr>
+    <tr><td><code>Boolean</code></td><td><code>TRUE / FALSE</code></td><td>只缓存两个静态常量</td></tr>
+    <tr><td><code>Float, Double</code></td><td>❌ <span class="highlight">无缓存</span></td><td>浮点数精度高，不适合缓存</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>⚠️ 面试高频陷阱：</strong>永远用 <code>.equals()</code> 比较两个包装类对象的值，不要用 <code>==</code>！
+    <code>==</code> 比较的是对象地址，不是值。
+  </div>
+</div>
+
+<!-- ==================== Slide 5: == 比较全场景分析 ==================== -->
+<div class="slide">
+  <div class="slide-number">05</div>
+  <h2>⭐⭐ 重难点：== 比较全场景分析</h2>
+
+  <table>
+    <tr><th>场景</th><th>表达式</th><th>结果</th><th>原因</th></tr>
+    <tr>
+      <td>new vs new</td>
+      <td><code>new Integer(127) == new Integer(127)</code></td>
+      <td><span class="highlight">false</span></td>
+      <td>两个独立堆对象，地址不同</td>
+    </tr>
+    <tr>
+      <td>new vs new(大值)</td>
+      <td><code>new Integer(128) == new Integer(128)</code></td>
+      <td><span class="highlight">false</span></td>
+      <td>同上，与值大小无关</td>
+    </tr>
+    <tr>
+      <td>自动装箱(范围内)</td>
+      <td><code>Integer x=127; Integer y=127; x==y</code></td>
+      <td><span class="green">true</span></td>
+      <td>缓存命中，同一对象</td>
+    </tr>
+    <tr>
+      <td>自动装箱(范围外)</td>
+      <td><code>Integer x=128; Integer y=128; x==y</code></td>
+      <td><span class="highlight">false</span></td>
+      <td>超出缓存，创建不同对象</td>
+    </tr>
+    <tr>
+      <td>Integer vs int</td>
+      <td><code>Integer(127) == 127</code></td>
+      <td><span class="green">true</span></td>
+      <td>自动拆箱→基本类型值比较</td>
+    </tr>
+    <tr>
+      <td>Integer vs int(大值)</td>
+      <td><code>Integer(128) == 128</code></td>
+      <td><span class="green">true</span></td>
+      <td>同上，自动拆箱后值相等</td>
+    </tr>
+    <tr>
+      <td>Integer vs null</td>
+      <td><code>Integer x=null; x==127</code></td>
+      <td><span class="highlight">NullPointerException</span></td>
+      <td>自动拆箱null.intValue()</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    <strong>核心记忆法则：</strong><br>
+    ① Wrapper<code>==</code>Wrapper：比较<strong>地址</strong>（受缓存影响）<br>
+    ② Wrapper<code>==</code>基本类型：触发<strong>自动拆箱</strong>，比较<strong>值</strong><br>
+    ③ 基本类型<code>==</code>基本类型：直接比较<strong>值</strong><br>
+    ④ 面试/生产环境：一律用<code>.equals()</code>
+  </div>
+</div>
+
+<!-- ==================== Slide 6: 三元运算符的类型统一陷阱 ==================== -->
+<div class="slide">
+  <div class="slide-number">06</div>
+  <h2>⭐⭐⭐ 重难点：三元运算符类型统一陷阱</h2>
+
+  <pre><code><span class="yellow">// 陷阱示例</span>
+Object obj = <span class="highlight">true</span> ? <span class="highlight">new Integer(1)</span> : <span class="highlight">new Double(2.0)</span>;
+System.out.println(obj);   <span class="highlight">// 输出：1.0 (不是 1！)</span>
+System.out.println(obj.getClass());  <span class="highlight">// class java.lang.Double</span></code></pre>
+
+  <div class="note">
+    <strong>原因：</strong>三元运算符 <code>? :</code> 会将两个分支的表达式<strong>统一为一个公共类型</strong>。
+    当一边是 <code>Integer</code>，另一边是 <code>Double</code> 时，Java 会进行<strong>二进制数值提升 (Binary Numeric Promotion)</strong>，
+    <code>Integer</code> 被自动提升到精度更高的 <code>Double</code>。所以 <code>new Integer(1)</code> 变成了 <code>1.0</code>。
+  </div>
+
+  <h3>对比：if-else 不受影响</h3>
+  <pre><code>Object obj2;
+<span class="highlight">if</span> (true) {
+    obj2 = <span class="highlight">new Integer(1)</span>;   <span class="yellow">// 各自独立评估</span>
+} else {
+    obj2 = <span class="highlight">new Double(2.0)</span>;
+}
+System.out.println(obj2);              <span class="green">// 输出：1 ✅</span>
+System.out.println(obj2.getClass());   <span class="green">// class java.lang.Integer</span></code></pre>
+
+  <div class="tip">
+    <strong>✅ 避坑指南：</strong>三元运算符的使用场景中，确保两个分支<strong>类型一致</strong>（如都要是 <code>int</code>
+    或都要是 <code>double</code>），否则会发生隐式类型提升，导致预期之外的精度变化。
+  </div>
+</div>
+
+<!-- ==================== Slide 7: Wrapper ↔ String 互转 ==================== -->
+<div class="slide">
+  <div class="slide-number">07</div>
+  <h2>Wrapper ↔ String 相互转换</h2>
+
+  <h3>Wrapper / 基本类型 → String（3种方式）</h3>
+  <pre><code>Integer i = 100;
+
+<span class="yellow">// 方式1：字符串拼接（最简便，但底层用StringBuilder）</span>
+String s1 = <span class="highlight">i + ""</span>;
+String s2 = i + <span class="highlight">"大力"</span>;
+
+<span class="yellow">// 方式2：调用 toString() 方法</span>
+String s3 = i.<span class="highlight">toString()</span>;         <span class="yellow">// Integer.toString()</span>
+String s4 = <span class="highlight">Integer.toString</span>(100);
+String s5 = <span class="highlight">Integer.toBinaryString</span>(100);  <span class="yellow">// "1100100" 进制转换</span>
+
+<span class="yellow">// 方式3：String.valueOf()</span>
+String s6 = <span class="highlight">String.valueOf</span>(i);
+String s7 = <span class="highlight">String.valueOf</span>(100);</code></pre>
+
+  <h3>String → Wrapper / 基本类型</h3>
+  <pre><code>String str = <span class="highlight">"123"</span>;
+
+<span class="yellow">// 方式1：parseXxx() 静态方法（返回基本类型）</span>
+<span class="highlight">int</span> n1 = Integer.<span class="highlight">parseInt</span>(str);
+<span class="highlight">double</span> n2 = Double.<span class="highlight">parseDouble</span>("3.14");
+<span class="highlight">boolean</span> n3 = Boolean.<span class="highlight">parseBoolean</span>("true");
+
+<span class="yellow">// 方式2：valueOf() 静态方法（返回包装对象）</span>
+Integer n4 = Integer.<span class="highlight">valueOf</span>(str);
+
+<span class="yellow">// 方式3：构造器（已过时，不推荐）</span>
+Integer n5 = <span class="highlight">new Integer</span>(str);</code></pre>
+
+  <div class="note">
+    <strong>parseXxx vs valueOf：</strong><br>
+    <code>parseInt()</code> 返回 <code>int</code>（基本类型），<code>valueOf()</code> 返回 <code>Integer</code>（包装对象，享受缓存）。
+  </div>
+</div>
+
+<!-- ==================== Slide 8: 常用方法速查 ==================== -->
+<div class="slide">
+  <div class="slide-number">08</div>
+  <h2>常用 API 速查手册</h2>
+
+  <h3>Number 子类通用常量</h3>
+  <table>
+    <tr><th>常量</th><th>含义</th><th>Integer</th><th>Long</th><th>Float/Double</th></tr>
+    <tr><td><code>MIN_VALUE</code></td><td>最小值</td><td>-2<sup>31</sup></td><td>-2<sup>63</sup></td><td>最小正非零值</td></tr>
+    <tr><td><code>MAX_VALUE</code></td><td>最大值</td><td>2<sup>31</sup>-1</td><td>2<sup>63</sup>-1</td><td>最大有限值</td></tr>
+    <tr><td><code>BYTES</code></td><td>字节数</td><td>4</td><td>8</td><td>4 / 8</td></tr>
+    <tr><td><code>SIZE</code></td><td>位数</td><td>32</td><td>64</td><td>32 / 64</td></tr>
+    <tr><td><code>TYPE</code></td><td>对应Class</td><td><code>int.class</code></td><td><code>long.class</code></td><td><code>float/double.class</code></td></tr>
+  </table>
+
+  <h3>Character 常用方法</h3>
+  <table>
+    <tr><th>方法</th><th>作用</th><th>示例</th></tr>
+    <tr><td><code>isDigit(ch)</code></td><td>是否数字</td><td><code>isDigit('5') → true</code></td></tr>
+    <tr><td><code>isLetter(ch)</code></td><td>是否字母</td><td><code>isLetter('A') → true</code></td></tr>
+    <tr><td><code>isUpperCase(ch)</code></td><td>是否大写</td><td><code>isUpperCase('a') → false</code></td></tr>
+    <tr><td><code>isLowerCase(ch)</code></td><td>是否小写</td><td><code>isLowerCase('a') → true</code></td></tr>
+    <tr><td><code>isWhitespace(ch)</code></td><td>是否空白</td><td><code>isWhitespace(' ') → true</code></td></tr>
+    <tr><td><code>toUpperCase(ch)</code></td><td>转大写</td><td><code>toUpperCase('a') → 'A'</code></td></tr>
+    <tr><td><code>toLowerCase(ch)</code></td><td>转小写</td><td><code>toLowerCase('A') → 'a'</code></td></tr>
+  </table>
+
+  <h3>数字型转换方法（来自Number的共同接口）</h3>
+  <pre><code>Integer i = 100;
+i.<span class="highlight">intValue</span>();      <span class="yellow">// → int</span>
+i.<span class="highlight">longValue</span>();     <span class="yellow">// → long</span>
+i.<span class="highlight">floatValue</span>();    <span class="yellow">// → float (可能精度丢失)</span>
+i.<span class="highlight">doubleValue</span>();   <span class="yellow">// → double</span>
+i.<span class="highlight">byteValue</span>();     <span class="yellow">// → byte (可能溢出截断)</span>
+i.<span class="highlight">shortValue</span>();    <span class="yellow">// → short (可能溢出截断)</span></code></pre>
+</div>
+
+<!-- ==================== Slide 9: 终极总结 ==================== -->
+<div class="slide">
+  <div class="slide-number">09</div>
+  <h2>终极总结：八大Wrapper重难点速记</h2>
+
+  <table>
+    <tr><th style="width:5%;">#</th><th>知识点</th><th>一句话总结</th><th>难度</th></tr>
+    <tr>
+      <td>1</td><td>八大类名</td>
+      <td><code>Byte Short Integer Long Float Double Boolean Character</code></td>
+      <td><span class="tag tag-blue">基础</span></td>
+    </tr>
+    <tr>
+      <td>2</td><td>父类区别</td>
+      <td>6个数字型继承 <code>Number</code>；<code>Boolean</code> 和 <code>Character</code> 直接继承 <code>Object</code></td>
+      <td><span class="tag tag-yellow">重要</span></td>
+    </tr>
+    <tr>
+      <td>3</td><td>装箱机制</td>
+      <td><code>Integer i = 100;</code> 编译器自动调用 <code>Integer.valueOf(100)</code></td>
+      <td><span class="tag tag-yellow">重要</span></td>
+    </tr>
+    <tr>
+      <td>4</td><td>拆箱机制</td>
+      <td><code>int n = i;</code> 编译器自动调用 <code>i.intValue()</code></td>
+      <td><span class="tag tag-yellow">重要</span></td>
+    </tr>
+    <tr>
+      <td>5</td><td>Integer缓存</td>
+      <td><code>-128~127</code> 范围内自动装箱返回同一对象；范围外创建新对象</td>
+      <td><span class="tag">⭐难点</span></td>
+    </tr>
+    <tr>
+      <td>6</td><td>== vs equals</td>
+      <td><code>==</code> 比较地址（受缓存干扰）；<code>.equals()</code> 比较值——面试/生产请用后者</td>
+      <td><span class="tag">⭐难点</span></td>
+    </tr>
+    <tr>
+      <td>7</td><td>三元类型统一</td>
+      <td><code>true ? Integer(1) : Double(2.0)</code> 结果是 <code>Double 1.0</code>，精度被提升</td>
+      <td><span class="tag">⭐难点</span></td>
+    </tr>
+    <tr>
+      <td>8</td><td>NPE陷阱</td>
+      <td><code>Integer i = null; int n = i;</code> 自动拆箱抛 NullPointerException</td>
+      <td><span class="tag">⭐难点</span></td>
+    </tr>
+    <tr>
+      <td>9</td><td>String互转</td>
+      <td><code>parseInt()</code>→基本类型；<code>valueOf()</code>→包装对象；<code>+""</code>/<code>toString()</code>→String</td>
+      <td><span class="tag tag-yellow">重要</span></td>
+    </tr>
+    <tr>
+      <td>10</td><td>缓存差异</td>
+      <td><code>Float/Double</code> <strong>无缓存</strong>；<code>Boolean</code> 只缓存 <code>TRUE/FALSE</code> 两个常量</td>
+      <td><span class="tag tag-yellow">重要</span></td>
+    </tr>
+  </table>
+
+  <div class="tip" style="margin-top:20px;">
+    <strong>📌 面试一句话：</strong>Wrapper 的本质是"让基本类型也能当对象用"。
+    核心三件事——<strong>装箱拆箱</strong>（valueOf / xxxValue）、<strong>缓存机制</strong>（-128~127）、
+    <strong>类型互转</strong>（parseXxx / valueOf / toString）。
+    记住这三点 + 善用 <code>.equals()</code>，Wrapper 没有坑。
+  </div>
+</div>
+
+<div class="footer">Java 八大 Wrapper 类 · 深入浅出总结 · Chapter 13</div>
+
+</div>
+</body>
+</html>
